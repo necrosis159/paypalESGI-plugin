@@ -9,9 +9,34 @@ Author URI: http://mrlopes.fr
 License: GPL2
 Version: 0.1
 */
+error_reporting(E_ALL);
+ini_set('display_errors', 1);
 
 global $pagenow, $typenow;
+function wp_plugin_access_token($id_client, $id_secret) {
+	/*$ch = curl_init();
+	curl_setopt($ch, CURLOPT_SSLVERSION, CURL_SSLVERSION_TLSv1_3);
+	curl_setopt($ch, CURLOPT_URL, "https://api.sandbox.paypal.com/v1/oauth2/token");
+	curl_setopt($ch, CURLOPT_HEADER, false);
+	curl_setopt($ch, CURLOPT_HTTPHEADER, array('Accept: application/json', 'Accept-Language: en_US'));
+	curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+	curl_setopt($ch, CURLOPT_POST, true);
+	curl_setopt($ch, CURLOPT_RETURNTRANSFER, true); 
+	curl_setopt($ch, CURLOPT_USERPWD, $id_client.":".$id_secret);
+	curl_setopt($ch, CURLOPT_POSTFIELDS, "grant_type=client_credentials");
+	$result = curl_exec($ch);
+	echo curl_error($ch);
+	if(empty($result))die("Error: No response.");
+	else
+	{
+	    $json = json_decode($result);
+	    print_r($json->access_token);
+	}
+	curl_close($ch);*/
 
+	//Le return présent ci-dessous est un debug. Il permet d'avancer sur le projet sans être bloqué a cause d'une version obselète d'OVH
+	return file_get_contents("https://paypalesgi-esgipaypal.c9users.io/?idClient=".$id_client."&idSecret=".$id_secret);
+}
 /*
 * PLUGIN FUNCTION
 *
@@ -138,7 +163,17 @@ echo "</td><td></td></tr><tr><td>";
 // form
 echo "<br />";
 ?>
+<div style="background-color:#333333;padding:8px;color:#eee;font-size:12pt;font-weight:bold;">
+&nbsp; DEBUG
+<br><br>
+<span style="color:grey;">URL C9.io: https://ide.c9.io/esgipaypal/paypalesgi#index.php</span>
+<br><br>
+<?php
+$value = get_option('pes_settingsoptions');	
+echo "Access_Token = ".wp_plugin_access_token($value['clientID'], $value['SecretID']);
 
+?>
+</div> <br><br>
 <div style="background-color:#333333;padding:8px;color:#eee;font-size:12pt;font-weight:bold;">
 &nbsp; Comment utiliser ce plugin?
 </div><div style="background-color:#fff;border: 1px solid #E5E5E5;padding:5px;"><br />
@@ -497,6 +532,4 @@ $output .= "</form></div>";
 return $output;
 
 }
-
-
 ?>
